@@ -1,7 +1,7 @@
 """
 eval_all_metrics_new.py — re-export metric ทุกโมเดลที่ 4 ตำแหน่งทศนิยม
 ดึงจาก prediction จริงบน test set เดียวกับตอนเทรน (ไม่ใช่เลขปัดจาก report)
-ครอบคลุม: RF, CNN, XGB, CNN+RF, CNN+XGB, CNN+RF+XGB  (เวอร์ชัน leaky/เดิม)
+ครอบคลุม: RF, CNN, XGB, CNN+RF, CNN+XGB, CNN+RF+XGB  (เวอร์ชัน รุ่นแรกy/เดิม)
 """
 import os, json, warnings
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"

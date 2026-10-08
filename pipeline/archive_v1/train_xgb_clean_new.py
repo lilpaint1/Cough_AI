@@ -1,10 +1,10 @@
 """
-train_xgb_clean_new.py — XGBoost เวอร์ชัน "แก้ data leakage"
+train_xgb_clean_new.py — XGBoost เวอร์ชัน "split ก่อน balance"
 ================================================================
 ต่างจาก train_xgb_new.py ตรงลำดับเท่านั้น (โมเดล/ฟีเจอร์เหมือนเดิม):
 
-  เดิม (leak) : SMOTE ทั้งก้อน → แบ่ง train/test   (test มีของปลอม)
-  ใหม่ (clean): แบ่ง train/test ก่อน → SMOTE เฉพาะ train
+  เดิม (รุ่นแรก) : SMOTE ทั้งก้อน → แบ่ง train/test   (test มีของปลอม)
+  ใหม่ (รุ่นใหม่): แบ่ง train/test ก่อน → SMOTE เฉพาะ train
                 → test เป็นข้อมูลจริง ไม่บาลานซ์ (real-world distribution)
 
 ผลที่คาด: ตัวเลขจะ "ลดลงและจริงขึ้น" — โดยเฉพาะ AUC จะไม่ใช่ 1.00 ปลอม ๆ
@@ -48,7 +48,7 @@ def main():
     print(f"   train (ดิบ): {np.unique(y_train, return_counts=True)}")
     print(f"   test  (ดิบ-จริง): {np.unique(y_test, return_counts=True)}")
 
-    # ✅ FIX 2: SMOTE เฉพาะ train เท่านั้น (test ไม่แตะ → ไม่มี leakage)
+    # ✅ FIX 2: SMOTE เฉพาะ train เท่านั้น (test ไม่แตะ → split ก่อน balance)
     print("⚖️  SMOTE เฉพาะ train fold...")
     sm = SMOTE(random_state=42)
     X_train_res, y_train_res = sm.fit_resample(X_train, y_train)
@@ -78,7 +78,7 @@ def main():
     macro_rec = recall_score(y_test, y_pred, average="macro")
     macro_auc = roc_auc_score(y_test, y_score, multi_class="ovr", average="macro")
 
-    print(f"\n================ ผลลัพธ์ (CLEAN / no leakage) ================")
+    print(f"\n================ ผลลัพธ์ (CLEAN / split ก่อน balance) ================")
     print(f"  Accuracy      : {acc:.4f}")
     print(f"  Macro-AUC     : {macro_auc:.4f}   <-- ค่า 'จริง' (ไม่เว่อร์แล้ว)")
     print(f"  Macro-Precision: {macro_pre:.4f}")
@@ -95,7 +95,7 @@ def main():
     plt.figure(figsize=(7, 6))
     sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
                 xticklabels=CLASSES, yticklabels=CLASSES)
-    plt.title("Confusion Matrix – XGBoost (CLEAN, no leakage)")
+    plt.title("Confusion Matrix – XGBoost (CLEAN, split ก่อน balance)")
     plt.xlabel("Predicted labels"); plt.ylabel("True labels")
     plt.tight_layout(); plt.savefig("xgb_clean_confusion_matrix.png", dpi=150); plt.close()
     print("✅ บันทึก xgb_clean_confusion_matrix.png")
@@ -121,7 +121,7 @@ def main():
     plt.plot([0, 1], [0, 1], 'k--', lw=1)
     plt.xlim([0, 1]); plt.ylim([0, 1.05])
     plt.xlabel("False Positive Rate"); plt.ylabel("True Positive Rate")
-    plt.title("ROC Curve – XGBoost (CLEAN, no leakage)")
+    plt.title("ROC Curve – XGBoost (CLEAN, split ก่อน balance)")
     plt.legend(loc="lower right")
     plt.tight_layout(); plt.savefig("xgb_clean_roc_curve.png", dpi=150); plt.close()
     print("✅ บันทึก xgb_clean_roc_curve.png")

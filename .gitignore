@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.env
+*.pkl
+*.h5
+*.npz
+*.npy
+.ipynb_checkpoints/
+.DS_Store
+.vercel/
+pipeline/portfolio_text_filled.txt
