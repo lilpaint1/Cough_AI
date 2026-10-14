@@ -90,3 +90,5 @@ python app.py
 | `POST /predict` | ส่งไฟล์เสียง → ผล 3 คลาส + ระดับความเสี่ยง |
 | `GET /history` | ประวัติการทำนาย |
 | `GET /warmup` | โหลดโมเดลล่วงหน้า |
+
+`<Nathakorn>` · [GitHub](https://github.com/lilpaint1)
